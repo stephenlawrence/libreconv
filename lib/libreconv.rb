@@ -29,13 +29,20 @@ module Libreconv
     def convert
       orig_stdout = $stdout.clone
       $stdout.reopen File.new('/dev/null', 'w')
-      Dir.mktmpdir { |target_path|
-        pid = Spoon.spawnp(@soffice_command, "--headless", "--convert-to", @convert_to, @source, "--outdir", target_path)
-        Process.waitpid(pid)
-        $stdout.reopen orig_stdout
-        target_tmp_file = "#{target_path}/#{File.basename(@source, ".*")}.#{File.basename(@convert_to, ":*")}"
-        FileUtils.cp target_tmp_file, @target
-      }
+
+      pid = Spoon.spawnp(
+        @soffice_command,
+        "--headless",
+        "--convert-to",
+        @convert_to,
+        @source,
+        "--outdir",
+        @target
+      )
+
+      Process.waitpid(pid)
+
+      $stdout.reopen orig_stdout
     end
 
     private
