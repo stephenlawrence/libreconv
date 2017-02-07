@@ -21,7 +21,7 @@ module Libreconv
       determine_soffice_command
       check_source_type
 
-      unless @soffice_command && File.exists?(@soffice_command)
+      unless @soffice_command && File.exist?(@soffice_command)
         raise IOError, "Can't find Libreoffice or Openoffice executable."
       end
     end
@@ -48,10 +48,10 @@ module Libreconv
     private
 
     def determine_soffice_command
-      unless @soffice_command
-        @soffice_command ||= which("soffice")
-        @soffice_command ||= which("soffice.bin")
-      end
+      return unless @soffice_command
+
+      @soffice_command ||= which("soffice")
+      @soffice_command ||= which("soffice.bin")
     end
 
     def which(cmd)
@@ -63,13 +63,13 @@ module Libreconv
         end
       end
 
-      return nil
+      nil
     end
 
     def check_source_type
-      return if File.exists?(@source) && !File.directory?(@source) #file
-      return if URI(@source).scheme == "http" && Net::HTTP.get_response(URI(@source)).is_a?(Net::HTTPSuccess) #http
-      return if URI(@source).scheme == "https" && Net::HTTP.get_response(URI(@source)).is_a?(Net::HTTPSuccess) #https
+      return if File.exists?(@source) && !File.directory?(@source) # file
+      return if URI(@source).scheme == "http" && Net::HTTP.get_response(URI(@source)).is_a?(Net::HTTPSuccess) # http
+      return if URI(@source).scheme == "https" && Net::HTTP.get_response(URI(@source)).is_a?(Net::HTTPSuccess) # https
       raise IOError, "Source (#{@source}) is neither a file nor an URL."
     end
   end
