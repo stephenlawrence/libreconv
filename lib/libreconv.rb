@@ -48,7 +48,7 @@ module Libreconv
     private
 
     def determine_soffice_command
-      return unless @soffice_command
+      return if @soffice_command
 
       @soffice_command ||= which("soffice")
       @soffice_command ||= which("soffice.bin")
